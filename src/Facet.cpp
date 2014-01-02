@@ -1,6 +1,5 @@
 #include "Facet.hpp"
 
-
 Facet::Facet(int _id, int _points[4], int _neighbours[4]){
 	this->setId(_id);
 	this->setPointsId(_points);

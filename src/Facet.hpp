@@ -9,11 +9,11 @@ class Facet{
 		int points[4];
 		int neighbours[4];
 	public:
-		Facet(int,int[],int[]);
+		Facet(int,int[4],int[4]);
 		int* getPointsId();
-		void setPointsId(int[]);
+		void setPointsId(int[4]);
 		int* getNeighboursId();
-		void setNeighboursId(int[]);
+		void setNeighboursId(int[4]);
 		int getId();
 		void setId(int);
 };
