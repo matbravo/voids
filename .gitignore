@@ -2,4 +2,6 @@
 *.slo
 *.lo
 *.o
+*.DS_Store
+build/test
 
