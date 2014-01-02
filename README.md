@@ -1,4 +1,4 @@
 voids
 =====
 
-Program "voids" created to find voids in the space, based on Carlos Hervias Caimapo.
+Program implemented to find voids in the space, based on Carlos Hervias Caimapo's algorithm.
