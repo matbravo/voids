@@ -4,4 +4,4 @@
 *.o
 *.DS_Store
 build/test
-
+build/main

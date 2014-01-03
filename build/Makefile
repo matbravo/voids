@@ -24,4 +24,4 @@ $(O_FILES): $(TEST_CPP_FILES) $(CPP_FILES)
 	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -c $(TEST_CPP_FILES) $(CPP_FILES) 
 
 clean:
-	rm $(TEST) *.o
+	rm $(TEST) $(MAIN) *.o
