@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include "Facet.hpp"
+#include "PointDictionary.hpp"
 #include <vector>
 using namespace std;
 
@@ -41,19 +42,23 @@ int main(int argc, char **argv){
 	string neightbours_file = points_file+string("_neighbours.dat");
 	string vertex_file = points_file+string("_vertex.dat");
 
-	// Crete the points dictionary in array 'points'
-	ifstream points_ifs(points_file.c_str());
+	// Crete points dictionary from file
+	PointDictionary pointsDic;
+	pointsDic.load(points_file);
+
+
+	/*ifstream points_ifs(points_file.c_str());
 	if(!points_ifs.good()){
 		cout << "Error when tried to open '" << points_file << "'" << '\n';
 		return 0;
 	}else{
 		// Using the second line to initialize the array
 		string line;
-		getline(points_ifs,line);
-		getline(points_ifs,line);
+		getline(points_ifs,line); 	// first line points' dimension
+		getline(points_ifs,line);	// second line number of points
 		int points_number = atoi(line.c_str());
 		float* points[points_number];
-		// Getting the points in file
+		// Getting points in file
 		for(int k = 0; k < points_number ; k++){
 			getline(points_ifs,line);
 			line.replace(line.length(),1,"\t");
@@ -66,11 +71,11 @@ int main(int argc, char **argv){
 			//cout << "\n";
 		}
 
-	}
+	}*/
 
 }
 
-vector<string> split(string str, char token){
+/*vector<string> split(string str, char token){
 	vector<string> result;
 	size_t begin = 0 ,found = 0;
 	found = str.find(token,begin);
@@ -80,7 +85,7 @@ vector<string> split(string str, char token){
 		found = str.find(token,begin);
 	}
 	return result;
-}
+}*/
 
 
 

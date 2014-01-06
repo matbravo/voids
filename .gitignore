@@ -3,5 +3,6 @@
 *.lo
 *.o
 *.DS_Store
+*.gch
 build/test
 build/main
