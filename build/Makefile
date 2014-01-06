@@ -4,7 +4,7 @@ CFLAGS= -g -Wall
 CPP_FILES := $(wildcard ../src/*.cpp)
 TEST_CPP_FILES := $(wildcard ../test/*.cpp)
 HPP_FILES := $(wildcard ../src/*.hpp)
-O_FILES = Facet.o FacetTest.o SortTest.o Dictionary.o PointDictionary.o
+O_FILES = Facet.o FacetTest.o SortTest.o DictionaryTest.o PointDictionary.o
 
 BUILD= build
 TEST= test
@@ -25,4 +25,4 @@ $(O_FILES): $(TEST_CPP_FILES) $(CPP_FILES) $(HPP_FILES)
 	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -c $(TEST_CPP_FILES) $(CPP_FILES)
 
 clean:
-	rm $(TEST) $(MAIN) *.o
+	rm $(TEST) $(MAIN) *.o dictPointsTestFile

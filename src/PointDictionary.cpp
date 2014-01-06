@@ -4,13 +4,8 @@
 #include <vector>
 using namespace std;
 
-PointDictionary::PointDictionary():Dictionary<int>(){
-
-}
-
-PointDictionary::~PointDictionary(){
-
-}
+PointDictionary::PointDictionary():Dictionary<float>(){}
+PointDictionary::~PointDictionary(){}
 
 void PointDictionary::load(string points_file){
 	ifstream points_ifs(points_file.c_str());
@@ -22,24 +17,24 @@ void PointDictionary::load(string points_file){
 		getline(points_ifs,line); 	// first line points' dimension
 		getline(points_ifs,line);	// second line number of points
 		int points_number = atoi(line.c_str());
-		float* points[points_number];
+		dict = new float*[points_number];
 		// Getting points in file
 		for(int k = 0; k < points_number ; k++){
 			getline(points_ifs,line);
 			line.replace(line.length(),1,"\t");
 			vector<string> line_splited = this->split(line,'\t');
 			// Matrix column x y z in points[k]
-			points[k] = new float[3];
-			cout << k << "\t";
+			dict[k] = new float[3];
+			int j = 0;
 			for(vector<string>::iterator it = line_splited.begin(); it != line_splited.end() ; it++){
-				cout << *it << " / " ;	
+				dict[k][j] = atof((*it).c_str());
+				j++;
 			}
-			cout << "\n";
 		}
-
+		points_ifs.close();
 	}
 }
 
-int* PointDictionary::getById(int id){
-	return 0;
+float* PointDictionary::getById(int id){
+	return dict[id];
 }

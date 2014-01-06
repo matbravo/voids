@@ -4,14 +4,14 @@
 
 using namespace std;
 
-class PointDictionary : public Dictionary<int>{
+class PointDictionary : public Dictionary<float>{
 	private:
-		int* dict[];
+		float** dict;
 	public:
 		PointDictionary();
 		~PointDictionary();
 		void load(string);
-		int* getById(int);
+		float* getById(int);
 };
 
 #endif
