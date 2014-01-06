@@ -21,7 +21,7 @@ void PointDictionary::load(string points_file){
 		// Getting points in file
 		for(int k = 0; k < points_number ; k++){
 			getline(points_ifs,line);
-			line.replace(line.length(),1,"\t");
+			//line.replace(line.length(),1,"\t");
 			vector<string> line_splited = this->split(line,'\t');
 			// Matrix column x y z in points[k]
 			dict[k] = new float[3];

@@ -26,6 +26,9 @@ template<class T> vector<string> Dictionary<T>::split(string str, char token){
 		begin = found+1;
 		found = str.find(token,begin);
 	}
+	if(begin != str.length()){
+		result.push_back(str.substr(begin,str.length()-begin+1));
+	}
 	return result;
 }
 
