@@ -1,10 +1,10 @@
 CC=g++
-CFLAGS= -g -Wall
+CFLAGS= -g -Wall -std=c++11
 
 CPP_FILES := $(wildcard ../src/*.cpp)
 TEST_CPP_FILES := $(wildcard ../test/*.cpp)
 HPP_FILES := $(wildcard ../src/*.hpp)
-O_FILES = Facet.o FacetTest.o SortTest.o DictionaryTest.o PointDictionary.o
+O_FILES = Facet.o FacetTest.o SortTest.o DictionaryTest.o PointDictionary.o FacetDictionary.o
 
 BUILD= build
 TEST= test

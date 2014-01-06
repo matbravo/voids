@@ -8,14 +8,15 @@ PointDictionary::PointDictionary():Dictionary<float>(){}
 PointDictionary::~PointDictionary(){}
 
 void PointDictionary::load(string points_file){
-	ifstream points_ifs(points_file.c_str());
+	string input_points = points_file+string(".dat");
+	ifstream points_ifs(input_points.c_str());
 	if(!points_ifs.good()){
 		cout << "Error when tried to open '" << points_file << "'" << '\n';
 	}else{
 		// Using the second line to initialize the array
 		string line;
-		getline(points_ifs,line); 	// first line points' dimension
-		getline(points_ifs,line);	// second line number of points
+		getline(points_ifs,line); 	// first line : points' dimension
+		getline(points_ifs,line);	// second line : number of points
 		int points_number = atoi(line.c_str());
 		dict = new float*[points_number];
 		// Getting points in file

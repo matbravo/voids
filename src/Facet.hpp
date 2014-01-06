@@ -9,6 +9,7 @@ class Facet{
 		int points[4];
 		int neighbours[4];
 	public:
+		Facet();
 		Facet(int,int[4],int[4]);
 		int* getPointsId();
 		void setPointsId(int[4]);
