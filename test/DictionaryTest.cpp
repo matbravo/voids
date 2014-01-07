@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <math.h>
 
 namespace DictionaryTest{
   class DictionaryTest : public ::testing::Test {
@@ -111,5 +112,49 @@ namespace DictionaryTest{
 
   }
 
+  TEST_F(DictionaryTest,RefreshDataTest){
+    string output_file = "dictPointsTestFile.dat";
+    ofstream ofs(output_file.c_str());
+    if(ofs.good()){
+        ofs << "3\n";
+        ofs << "4\n";
+        ofs << "0\t0\t-1\n";
+        ofs << "0\t0\t11\n";
+        ofs << "5\t0\t-1\n";
+        ofs << "0\t5\t-1\n";
+        ofs.close();
+        
+        dictPoints->load("dictPointsTestFile");
+
+        remove(output_file.c_str());
+    }
+
+    string output_file_neighbours = "dictFacetsTestFile_neighbours.dat";
+    string output_file_vertexes = "dictFacetsTestFile_vertex.dat";
+
+    ofstream neighbours_ofs(output_file_neighbours.c_str());
+    ofstream vertexes_ofs(output_file_vertexes.c_str());
+
+    if(neighbours_ofs.good()){
+      neighbours_ofs << "1\n";
+      neighbours_ofs << "4 1 4331 4314 55\n";
+      neighbours_ofs.close(); 
+    }
+
+    if(vertexes_ofs.good()){
+      vertexes_ofs << "1\n";
+      vertexes_ofs << "4 1 3 2 0\n";
+      vertexes_ofs.close();
+    }
+
+    dictFacets->load("dictFacetsTestFile");
+    remove("dictFacetsTestFile_vertex.dat");
+    remove("dictFacetsTestFile_neighbours.dat");
+
+    dictFacets->setPointDictionary(dictPoints);
+
+    Facet* aux= dictFacets->getById(0);
+    ASSERT_EQ(aux->getLongestEdge(),sqrt(pow(12,2)+pow(5,2)));
+  }
 
 }

@@ -7,6 +7,10 @@ using namespace std;
 PointDictionary::PointDictionary():Dictionary<float>(){}
 PointDictionary::~PointDictionary(){}
 
+float* PointDictionary::getById(int id){
+	return dict[id];
+}
+
 void PointDictionary::load(string points_file){
 	string input_points = points_file+string(".dat");
 	ifstream points_ifs(input_points.c_str());
@@ -18,6 +22,7 @@ void PointDictionary::load(string points_file){
 		getline(points_ifs,line); 	// first line : points' dimension
 		getline(points_ifs,line);	// second line : number of points
 		int points_number = atoi(line.c_str());
+		data_n = points_number;
 		dict = new float*[points_number];
 		// Getting points in file
 		for(int k = 0; k < points_number ; k++){
@@ -36,6 +41,3 @@ void PointDictionary::load(string points_file){
 	}
 }
 
-float* PointDictionary::getById(int id){
-	return dict[id];
-}

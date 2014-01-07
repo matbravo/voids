@@ -1,8 +1,7 @@
 #ifndef __POINTDICTIONARY__H
 #define __POINTDICTIONARY__H
-#include "Dictionary.hpp"
 
-using namespace std;
+#include "Dictionary.hpp"
 
 class PointDictionary : public Dictionary<float>{
 	private:

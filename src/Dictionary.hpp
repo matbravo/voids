@@ -8,6 +8,7 @@ using namespace std;
 template<class T>
 class Dictionary{
 	protected:
+		int data_n;
 		vector<string> split(string str, char token);
 	public:
 		Dictionary(){};

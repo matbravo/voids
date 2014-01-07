@@ -1,4 +1,5 @@
 #include "Facet.hpp"
+#include <math.h>
 
 Facet::Facet(){}
 
@@ -31,3 +32,20 @@ void Facet::setNeighboursId(int _neighbours[4]){
 	neighbours[2]=_neighbours[2];
 	neighbours[3]=_neighbours[3];
 }
+float Facet::getLongestEdge(){
+	return this->longestEdge;
+}
+void Facet::setLongestEdge(PointDictionary* pointsDict){
+	int *points_id = getPointsId();
+	float max = 0.0;
+	for(int k=0; k < 4 ; ++k){
+		float* point_k = pointsDict->getById(points_id[k]);
+		for(int j = k+1; j < 4; ++j){
+			float* point_j = pointsDict->getById(points_id[j]);
+			float result = sqrt(pow(point_j[0] - point_k[0],2) + pow(point_j[1] - point_k[1],2) + pow(point_j[2] - point_k[2],2));
+			if(result > max) max = result;
+		}
+	}
+	longestEdge = max;
+}
+

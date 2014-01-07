@@ -31,6 +31,7 @@ void FacetDictionary::load(string input_file){
 		int facet_number2 = atoi(line2.c_str());
 		if(facet_number1 == facet_number2){
 			dict = new Facet[facet_number1];
+			data_n = facet_number1;
 			// Read from files in two threads.
 			thread first(&FacetDictionary::loadVertexes ,this , &vertexes_ifs , facet_number1);
 			thread second(&FacetDictionary::loadNeighbours,this , &neighbours_ifs , facet_number2);
@@ -38,6 +39,8 @@ void FacetDictionary::load(string input_file){
 			second.join();
 			vertexes_ifs.close();
 			neighbours_ifs.close();
+		}else{
+			cout << "Length of files doesn't match" << "\n";
 		} 
 	}
 }
@@ -74,9 +77,16 @@ void FacetDictionary::loadVertexes(ifstream *vertexes_ifs,int number){
 	}
 }
 
+void FacetDictionary::setPointDictionary(PointDictionary* _pointsDict){
+	pointsDict= _pointsDict;
+	reloadFacetData();
+}
 
-
-
+void FacetDictionary::reloadFacetData(){
+	for(int k = 0; k < data_n ; ++k){
+		dict[k].setLongestEdge(pointsDict);
+	}
+}
 
 
 
