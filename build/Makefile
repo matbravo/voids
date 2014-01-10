@@ -4,7 +4,7 @@ CFLAGS= -g -Wall -std=c++11
 CPP_FILES := $(wildcard ../src/*.cpp)
 TEST_CPP_FILES := $(wildcard ../test/*.cpp)
 HPP_FILES := $(wildcard ../src/*.hpp)
-O_FILES = Facet.o FacetTest.o SortTest.o DictionaryTest.o PointDictionary.o FacetDictionary.o
+O_FILES = Facet.o Edge.o FacetTest.o SortTest.o DictionaryTest.o PointDictionary.o FacetDictionary.o EdgeDictionary.o AnalysisCriteria1.o
 
 BUILD= build
 TEST= test

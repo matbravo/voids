@@ -15,6 +15,8 @@ class Dictionary{
 		~Dictionary(){};
 		virtual void load(string) = 0;
 		virtual T* getById(int) = 0;
+		virtual int add(T*) = 0;
+		int getDataLength(){return data_n;}
 };
 
 

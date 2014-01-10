@@ -15,27 +15,45 @@ void Facet::setId(int _id){
 	id=_id;
 }
 int* Facet::getPointsId(){
-	return this->points;
+	return this->pointsId;
 }
-void Facet::setPointsId(int _points[4]){
-	points[0]=_points[0];
-	points[1]=_points[1];
-	points[2]=_points[2];
-	points[3]=_points[3];
+void Facet::setPointsId(int _pointsId[4]){
+	pointsId[0]=_pointsId[0];
+	pointsId[1]=_pointsId[1];
+	pointsId[2]=_pointsId[2];
+	pointsId[3]=_pointsId[3];
 }
 int* Facet::getNeighboursId(){
-	return this->neighbours;
+	return this->neighboursId;
 }
-void Facet::setNeighboursId(int _neighbours[4]){
-	neighbours[0]=_neighbours[0];
-	neighbours[1]=_neighbours[1];
-	neighbours[2]=_neighbours[2];
-	neighbours[3]=_neighbours[3];
+void Facet::setNeighboursId(int _neighboursId[4]){
+	neighboursId[0]=_neighboursId[0];
+	neighboursId[1]=_neighboursId[1];
+	neighboursId[2]=_neighboursId[2];
+	neighboursId[3]=_neighboursId[3];
 }
-float Facet::getLongestEdge(){
+int* Facet::getEdgesId(){
+	return this->edgesId;
+}
+void Facet::setEdgesId(int _edgesId[4]){
+	edgesId[0]=_edgesId[0];
+	edgesId[1]=_edgesId[1];
+	edgesId[2]=_edgesId[2];
+	edgesId[3]=_edgesId[3];
+	edgesId[4]=_edgesId[4];
+	edgesId[5]=_edgesId[5];
+}
+void Facet::setEdgeDictionary(EdgeDictionary* _edgesDict){
+	edgesDict = _edgesDict;
+}
+void Facet::setPointDictionary(PointDictionary* _pointsDict){
+	pointsDict = _pointsDict;
+}
+
+/*float Facet::getLongestEdge(){
 	return this->longestEdge;
-}
-void Facet::setLongestEdge(PointDictionary* pointsDict){
+}*/
+/*void Facet::setLongestEdge(PointDictionary* pointsDict){
 	int *points_id = getPointsId();
 	float max = 0.0;
 	for(int k=0; k < 4 ; ++k){
@@ -47,5 +65,5 @@ void Facet::setLongestEdge(PointDictionary* pointsDict){
 		}
 	}
 	longestEdge = max;
-}
+}*/
 

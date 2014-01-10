@@ -11,6 +11,10 @@ float* PointDictionary::getById(int id){
 	return dict[id];
 }
 
+int PointDictionary::add(float*){
+	return 0;
+}
+
 void PointDictionary::load(string points_file){
 	string input_points = points_file+string(".dat");
 	ifstream points_ifs(input_points.c_str());
