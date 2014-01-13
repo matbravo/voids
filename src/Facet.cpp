@@ -49,21 +49,76 @@ void Facet::setEdgeDictionary(EdgeDictionary* _edgesDict){
 void Facet::setPointDictionary(PointDictionary* _pointsDict){
 	pointsDict = _pointsDict;
 }
-
-/*float Facet::getLongestEdge(){
-	return this->longestEdge;
-}*/
-/*void Facet::setLongestEdge(PointDictionary* pointsDict){
-	int *points_id = getPointsId();
-	float max = 0.0;
-	for(int k=0; k < 4 ; ++k){
-		float* point_k = pointsDict->getById(points_id[k]);
-		for(int j = k+1; j < 4; ++j){
-			float* point_j = pointsDict->getById(points_id[j]);
-			float result = sqrt(pow(point_j[0] - point_k[0],2) + pow(point_j[1] - point_k[1],2) + pow(point_j[2] - point_k[2],2));
-			if(result > max) max = result;
+float Facet::getLongestEdge(){
+	if(this->longestEdge <= 0.0){
+		float max_length = 0.0;
+		for(int k= 0 ; k < 6 ; k++){
+			float length = edgesDict->getById(edgesId[k])->getLength();
+			if(length > max_length) max_length = length;
 		}
+		longestEdge = max_length;
 	}
-	longestEdge = max;
-}*/
+	return this->longestEdge;
+}
+float Facet::getVolume(){
+	// Matrix result from vertex a,b,c and d
+	// |(a-d).((b-d)x(c-d))|/6
+	if(this->volume <= 0.0){
+		float* a = pointsDict->getById(pointsId[0]);
+		float* b = pointsDict->getById(pointsId[1]);
+		float* c = pointsDict->getById(pointsId[2]);
+		float* d = pointsDict->getById(pointsId[3]);
+		float a_d[3];
+		float b_d[3];
+		float c_d[3];
+		for(int k = 0 ; k < 3 ; k++){
+			a_d[k] = a[k] - d[k];
+			b_d[k] = b[k] - d[k];
+			c_d[k] = c[k] - d[k];
+		}
+		// (b-d) x (c-d)
+		float b_dXc_d[3];
+		b_dXc_d[0] = b_d[1]*c_d[2] - c_d[1]*b_d[2];
+		b_dXc_d[1] = c_d[0]*b_d[2] - b_d[0]*c_d[2];
+		b_dXc_d[2] = b_d[0]*c_d[1] - c_d[0]*b_d[1];
+		float result = (a_d[0]*b_dXc_d[0] + a_d[1]*b_dXc_d[1] + a_d[2]*b_dXc_d[2]);
+		result = result/6.0;
+		if(result <= 0.0 ) result= result*-1.0;
+		volume = result;
+	}
+	return this->volume;
+}
+float* Facet::getCentroid(){
+	float* v1 = pointsDict->getById(pointsId[0]);
+	float* v2 = pointsDict->getById(pointsId[1]);
+	float* v3 = pointsDict->getById(pointsId[2]);
+	float* v4 = pointsDict->getById(pointsId[3]);
+
+	float result[3];
+	result[0] = v1[0]+v2[0]+v3[0]+v4[0];
+	result[1] = v1[1]+v2[1]+v3[1]+v4[1];
+	result[2] = v1[2]+v2[2]+v3[2]+v4[2];
+
+	centroid[0] = result[0]/4.0;
+	centroid[1] = result[1]/4.0;
+	centroid[2] = result[2]/4.0;
+
+	//cout << "GetCentroid function : " << centroid[0] << " " << centroid[1] << " " << centroid[2] << "\n";
+
+	return this->centroid;
+}
+int Facet::isInBorder(){
+	for(int k = 0 ; k < 4 ; ++k){
+		if(neighboursId[k] < 0 ) return 1;
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
 

@@ -13,6 +13,9 @@ class Facet{
 		int edgesId[6];
 		PointDictionary* pointsDict;
 		EdgeDictionary* edgesDict;
+		float longestEdge;
+		float volume;
+		float centroid[3];
 	public:
 		Facet();
 		Facet(int,int[4],int[4]);
@@ -24,9 +27,12 @@ class Facet{
 		void setNeighboursId(int[4]);
 		int* getEdgesId();
 		void setEdgesId(int[6]);
-		int getLongestEdgeId();
+		float getLongestEdge();
 		void setPointDictionary(PointDictionary*);
 		void setEdgeDictionary(EdgeDictionary*);
+		float getVolume();
+		float* getCentroid();
+		int isInBorder();
 };
 
 #endif

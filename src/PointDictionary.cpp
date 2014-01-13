@@ -37,7 +37,7 @@ void PointDictionary::load(string points_file){
 			dict[k] = new float[3];
 			int j = 0;
 			for(vector<string>::iterator it = line_splited.begin(); it != line_splited.end() ; it++){
-				dict[k][j] = atof((*it).c_str());
+				dict[k][j] = stof((*it).c_str());
 				j++;
 			}
 		}

@@ -20,8 +20,12 @@ void FacetDictionary::load(string input_file){
 	string input_vertexes = input_file+string("_vertex.dat");
 	string input_neighbours = input_file+string("_neighbours.dat");
 	
-	ifstream vertexes_ifs(input_vertexes);
-	ifstream neighbours_ifs(input_neighbours);
+	//ifstream vertexes_ifs(input_vertexes);
+	//ifstream neighbours_ifs(input_neighbours);
+	ifstream vertexes_ifs;
+	ifstream neighbours_ifs;
+	vertexes_ifs.open(input_vertexes,ifstream::in);
+	neighbours_ifs.open(input_neighbours,ifstream::in);
 
 	if(!vertexes_ifs.good() || !neighbours_ifs.good()){
 		cout << "Error when tried to open '" << input_file << "'" << '\n';
@@ -40,13 +44,15 @@ void FacetDictionary::load(string input_file){
 			// Read from files in two threads.
 			thread first(&FacetDictionary::loadVertexesAndEdges ,this , &vertexes_ifs , facet_number1);
 			thread second(&FacetDictionary::loadNeighbours,this , &neighbours_ifs , facet_number2);
-			first.join();
 			second.join();
-			vertexes_ifs.close();
-			neighbours_ifs.close();
+			first.join();
+			//loadNeighbours(&neighbours_ifs,facet_number2);
+			//loadVertexesAndEdges(&vertexes_ifs,facet_number1);
 		}else{
 			cout << "Length of files doesn't match" << "\n";
-		} 
+		}
+		vertexes_ifs.close();
+		neighbours_ifs.close(); 
 	}
 }
 
@@ -55,7 +61,7 @@ void FacetDictionary::loadNeighbours(ifstream *neighbours_ifs,int number){
 	// Getting neighbours' id in file
 	for(int k = 0; k < number ; k++){
 		getline(*neighbours_ifs,line);
-		vector<string> line_splited = FacetDictionary::split(line,' ');
+		vector<string> line_splited = this->split(line,' ');
 		int j = 0;
 		int *aux = new int[4];
 		for(vector<string>::iterator it = line_splited.begin()+1; it != line_splited.end() ; it++){ // first col : number of neighbours
@@ -64,6 +70,7 @@ void FacetDictionary::loadNeighbours(ifstream *neighbours_ifs,int number){
 		}
 		facetsDict[k]->setNeighboursId(aux);
 	}
+	return;
 }
 
 // Load vertexes and edges to the dictionary
@@ -94,6 +101,7 @@ void FacetDictionary::loadVertexesAndEdges(ifstream *vertexes_ifs,int number){
 		facetsDict[k]->setEdgesId(edge_aux);
 		facetsDict[k]->setEdgeDictionary(this->edgesDict);
 	}
+	return;
 }
 
 void FacetDictionary::setPointDictionary(PointDictionary* _pointsDict){
@@ -101,6 +109,7 @@ void FacetDictionary::setPointDictionary(PointDictionary* _pointsDict){
 	for(int k=0 ; k < this->data_n ; k++){
 		facetsDict[k]->setPointDictionary(_pointsDict);
 	}
+	edgesDict->setPointDictionary(_pointsDict);
 }
 
 EdgeDictionary* FacetDictionary::getEdgeDictionary(){

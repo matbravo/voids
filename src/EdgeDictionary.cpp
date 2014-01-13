@@ -9,7 +9,9 @@ int EdgeDictionary::add(Edge* _edge){
 }
 
 int EdgeDictionary::add(int x,int y){ // Edge without ID
-	int pointsId[2] = {x,y}; 
+	int *pointsId= new int[2];
+	pointsId[0] = x;
+	pointsId[1] = y; 
 	// Always keep lower point id as first value inside key map in edgesDict1
 	if(pointsId[0] > pointsId[1]) {
 		int id = pointsId[1];
@@ -39,4 +41,7 @@ Edge* EdgeDictionary::getById(int _id){
 
 void EdgeDictionary::setPointDictionary(PointDictionary* _pointsDict){
 	pointsDict = _pointsDict;
+	for(vector<Edge*>::iterator it = edgesDict2.begin(); it != edgesDict2.end() ; ++it){
+		(*it)->setPointDictionary(_pointsDict); 
+	}
 }

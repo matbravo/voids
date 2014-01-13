@@ -31,11 +31,14 @@ void Edge::addFacetId(int _facetId){
 vector<int> Edge::getFacetsId(){
 	return this->facetsId;
 }
+void Edge::setPointDictionary(PointDictionary* _pointsDict){
+	pointsDict = _pointsDict;
+}
 void Edge::setLength(float _length){
 	length=_length; 
 }
 float Edge::getLength(){
-	if(this->length <= 0){
+	if(this->length <= 0.0){
 		float *point_j = pointsDict->getById(pointsId[0]);
 		float *point_k = pointsDict->getById(pointsId[1]);
 		length = sqrt(pow(point_j[0] - point_k[0],2) + pow(point_j[1] - point_k[1],2) + pow(point_j[2] - point_k[2],2));

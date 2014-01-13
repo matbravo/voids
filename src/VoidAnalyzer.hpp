@@ -8,12 +8,13 @@ using namespace std;
 
 class VoidAnalyzer{
 	protected:
-		vector< vector<Facet*> > result;
+		vector< vector<int> > result;
 	public:
 		VoidAnalyzer(){};
 		virtual ~VoidAnalyzer(){};
 		virtual void analyze(FacetDictionary*) = 0;
-		virtual vector< vector< Facet* > > getResult() = 0;
+		virtual vector< vector< int > > getResult() = 0;
+		virtual void printResult(string,FacetDictionary*) = 0;
 };
 
 
