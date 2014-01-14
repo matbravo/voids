@@ -5,6 +5,7 @@
 #include "VoidAnalyzer.hpp"
 #include "FacetDictionary.hpp"
 #include "PointDictionary.hpp"
+#define MIN_VOLUME 7238.0
 
 using namespace std;
 class AnalysisCriteria1 : public VoidAnalyzer{

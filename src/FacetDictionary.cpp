@@ -7,108 +7,125 @@ using namespace std;
 
 FacetDictionary::FacetDictionary(): Dictionary<Facet>(){
 	edgesDict = new EdgeDictionary();
+	data_n = 0;
 }
-FacetDictionary::~FacetDictionary(){}
+FacetDictionary::~FacetDictionary(){
+	delete edgesDict;
+	for(int k = 0 ; k < data_n ; ++k){
+		delete [] facetsNeighboursId[k];
+		delete [] facetsPointsId[k];
+		delete [] facetsEdgesId[k];
+	}
+	delete [] facetsNeighboursId;
+	delete [] facetsEdgesId;
+	delete [] facetsPointsId;
+}
 
 Facet* FacetDictionary::getById(int id){
-	return facetsDict[id];
+	Facet* facet = new Facet();
+	facet->setId(id);
+	facet->setPointsId(facetsPointsId[id]);
+	facet->setNeighboursId(facetsNeighboursId[id]);
+	facet->setEdgesId(facetsEdgesId[id]);
+	facet->setEdgeDictionary(this->edgesDict);
+	facet->setPointDictionary(this->pointsDict);
+	return facet;
 }
 
 void FacetDictionary::load(string input_file){
 	// Input files strings.
-	
 	string input_vertexes = input_file+string("_vertex.dat");
 	string input_neighbours = input_file+string("_neighbours.dat");
-	
-	//ifstream vertexes_ifs(input_vertexes);
-	//ifstream neighbours_ifs(input_neighbours);
 	ifstream vertexes_ifs;
-	ifstream neighbours_ifs;
 	vertexes_ifs.open(input_vertexes,ifstream::in);
-	neighbours_ifs.open(input_neighbours,ifstream::in);
 
-	if(!vertexes_ifs.good() || !neighbours_ifs.good()){
+	if(!vertexes_ifs.good()){
 		cout << "Error when tried to open '" << input_file << "'" << '\n';
 	}else{
-		string line1,line2;
+		string line1;
 		getline(vertexes_ifs,line1); // first line : number of facets
-		getline(neighbours_ifs,line2);
-		int facet_number1 = atoi(line1.c_str());
-		int facet_number2 = atoi(line2.c_str());
-		if(facet_number1 == facet_number2){
-			facetsDict = new Facet*[facet_number1];
-			for(int k = 0 ; k < facet_number1 ; ++k){
-				facetsDict[k] = new Facet();
-			}
-			data_n = facet_number1;
-			// Read from files in two threads.
-			thread first(&FacetDictionary::loadVertexesAndEdges ,this , &vertexes_ifs , facet_number1);
-			thread second(&FacetDictionary::loadNeighbours,this , &neighbours_ifs , facet_number2);
-			second.join();
-			first.join();
-			//loadNeighbours(&neighbours_ifs,facet_number2);
-			//loadVertexesAndEdges(&vertexes_ifs,facet_number1);
-		}else{
-			cout << "Length of files doesn't match" << "\n";
-		}
+		int facet_number = atoi(line1.c_str());
 		vertexes_ifs.close();
-		neighbours_ifs.close(); 
+		facetsNeighboursId = new int*[facet_number];
+		facetsEdgesId = new int*[facet_number];
+		facetsPointsId = new int*[facet_number];
+		data_n = facet_number;
+		// Read from files into two threads.
+		//thread first(&FacetDictionary::loadVertexesAndEdges,this,input_vertexes,facet_number);
+		//thread second(&FacetDictionary::loadNeighbours,this,input_neighbours,facet_number);
+		//second.join();
+		//first.join();
+		loadNeighbours(input_neighbours,facet_number);
+		loadVertexesAndEdges(input_vertexes,facet_number);
 	}
 }
 
-void FacetDictionary::loadNeighbours(ifstream *neighbours_ifs,int number){
+void FacetDictionary::loadNeighbours(string input_neighbours,int number){
 	string line;
-	// Getting neighbours' id in file
-	for(int k = 0; k < number ; k++){
-		getline(*neighbours_ifs,line);
-		vector<string> line_splited = this->split(line,' ');
-		int j = 0;
-		int *aux = new int[4];
-		for(vector<string>::iterator it = line_splited.begin()+1; it != line_splited.end() ; it++){ // first col : number of neighbours
-			aux[j] = atoi((*it).c_str());
-			j++;
+	ifstream neighbours_ifs;
+	neighbours_ifs.open(input_neighbours,ifstream::in);
+	if(!neighbours_ifs.good()){
+		cout << "Error when tried to open '" << input_neighbours << "'" << '\n';
+	}else{
+		getline(neighbours_ifs,line);
+		// Getting neighbours' id in file
+		for(int k = 0; k < number ; k++){
+			getline(neighbours_ifs,line);
+			vector<string> line_splited = this->split(line,' ');
+			int j = 0;
+			int* aux = new int[4];
+			for(vector<string>::iterator it = line_splited.begin()+1; it != line_splited.end() ; it++){ // first col : number of neighbours
+				aux[j] = atoi((*it).c_str());
+				j++;
+			}
+			//cout << "Neighbour : " << aux[0] << " " << aux[1] << " " << aux[2] << " " << aux[3] << "\n";
+			facetsNeighboursId[k] = aux;
 		}
-		facetsDict[k]->setNeighboursId(aux);
+		neighbours_ifs.close();
 	}
 	return;
 }
 
 // Load vertexes and edges to the dictionary
-void FacetDictionary::loadVertexesAndEdges(ifstream *vertexes_ifs,int number){
+void FacetDictionary::loadVertexesAndEdges(string input_vertexes,int number){
 	string line;
-	// Getting vertexes' id in file
-	for(int k = 0; k < number ; k++){
-		getline(*vertexes_ifs,line);
-		vector<string> line_splited = this->split(line,' ');
-		int j = 0;
-		int *point_aux = new int[4];
-		int *edge_aux = new int[6];
-		for(vector<string>::iterator it = line_splited.begin()+1; it != line_splited.end() ; it++){ // first col : number of neighbours
-			point_aux[j] = atoi((*it).c_str());
-			j++;
-		}
-		// Add the edges
-		int edge_k = 0;
-		for (int i = 0 ; i < 4 ;i++){
-			for(int j = i+1; j < 4 ; ++j){
-				edge_aux[edge_k] = edgesDict->add(point_aux[i],point_aux[j]); // Add Edge to edgesDict
-				edgesDict->getById(edge_aux[edge_k])->addFacetId(k); // Add facet to FacetsId in Edge
-				edge_k++;
+	ifstream vertexes_ifs;
+	vertexes_ifs.open(input_vertexes,ifstream::in);
+	if(!vertexes_ifs.good()){
+		cout << "Error when tried to open '" << input_vertexes << "'" << '\n';
+	}else{
+		getline(vertexes_ifs,line); // first line number of facets
+		// Getting vertexes' id in file
+		for(int k = 0; k < number ; k++){
+			getline(vertexes_ifs,line);
+			vector<string> line_splited = this->split(line,' ');
+			int j = 0;
+			int *point_aux = new int[4];
+			int *edge_aux = new int[6];
+			for(vector<string>::iterator it = line_splited.begin()+1; it != line_splited.end() ; it++){ // first col : number of neighbours
+				point_aux[j] = atoi((*it).c_str());
+				j++;
 			}
+			
+			// Add the edges
+			int edge_k = 0;
+			for (int i = 0 ; i < 4 ;i++){
+				for(int j = i+1; j < 4 ; ++j){
+					edge_aux[edge_k] = edgesDict->add(point_aux[i],point_aux[j],k); // Add Edge to edgesDicts
+					edge_k++;
+				}
+			}
+			//cout << "Vertex : " << point_aux[0] << " " << point_aux[1] << " " << point_aux[2] << "  " << point_aux[3] << "\n";
+			facetsPointsId[k] = point_aux;
+			facetsEdgesId[k] = edge_aux; 
 		}
-		facetsDict[k]->setId(k);
-		facetsDict[k]->setPointsId(point_aux);
-		facetsDict[k]->setEdgesId(edge_aux);
-		facetsDict[k]->setEdgeDictionary(this->edgesDict);
+		vertexes_ifs.close();
 	}
 	return;
 }
 
 void FacetDictionary::setPointDictionary(PointDictionary* _pointsDict){
 	pointsDict= _pointsDict;
-	for(int k=0 ; k < this->data_n ; k++){
-		facetsDict[k]->setPointDictionary(_pointsDict);
-	}
 	edgesDict->setPointDictionary(_pointsDict);
 }
 

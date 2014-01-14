@@ -1,10 +1,13 @@
 #include "Edge.hpp"
 #include <math.h>
 
-Edge::Edge(){}
+Edge::Edge(){
+	length = 0.0;
+}
 Edge::Edge(int x, int y){
 	pointsId[0] = x;
 	pointsId[1] = y;
+	length = 0.0;
 }
 Edge::~Edge(){}
 

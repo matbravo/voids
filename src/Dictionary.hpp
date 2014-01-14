@@ -12,7 +12,7 @@ class Dictionary{
 		vector<string> split(string str, char token);
 	public:
 		Dictionary(){};
-		~Dictionary(){};
+		virtual ~Dictionary(){};
 		virtual void load(string) = 0;
 		virtual T* getById(int) = 0;
 		virtual int add(T*) = 0;

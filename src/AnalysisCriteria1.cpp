@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -17,26 +18,46 @@ bool isBiggerThan(Edge* a, Edge* b){
 }
 
 void AnalysisCriteria1::analyze(FacetDictionary *facetsDict){
+	cout << "analyzing ...\n";
 	vector < vector < int > > voidsResult; // Facets id in voids
 	EdgeDictionary* edgesDict = facetsDict->getEdgeDictionary();
+
 	vector<Edge*> edgeList(edgesDict->getDataLength());
 	for(int k=0 ; k < edgesDict->getDataLength() ; k++){
 		edgeList[k] = edgesDict->getById(k);
 	}
 	sort(edgeList.begin(),edgeList.end(),isBiggerThan); // Complexity N log N
+
+
 	int *facetsInVoid= new int[facetsDict->getDataLength()]; // Array contains facets marked visited by analyze
+	for(int i=0;i < facetsDict->getDataLength();++i){
+			facetsInVoid[i] = 0;
+		}
 
 	for(vector<Edge*>::iterator it = edgeList.begin(); it != edgeList.end() ; ++it){
 		Edge* edge = *it;
 		vector<int> *singleVoid = new vector<int>(); // Facets' id of a single void
+
 		checkNeighbours(edge,facetsDict,singleVoid,facetsInVoid);
 		if(singleVoid->size() > 0 ){
-			// Delete if 
-			voidsResult.push_back(*singleVoid);
+			// Delete if singleVoid is in border
+			int isInBorder = 0;
+			float volume = 0.0;
+			for(vector<int>::iterator singleVoid_it = singleVoid->begin(); singleVoid_it != singleVoid->end(); ++singleVoid_it){
+				if(facetsDict->getById(*singleVoid_it)->isInBorder() == 1)
+					isInBorder = 1;
+				volume+=facetsDict->getById(*singleVoid_it)->getVolume();
+			}
+			if( isInBorder == 0 && volume > MIN_VOLUME){ // Add only if not in border
+				voidsResult.push_back(*singleVoid);
+			}else{
+				delete singleVoid;
+			}
 		}else{
-			delete(singleVoid);
+			delete singleVoid;
 		}
 	}
+	delete [] facetsInVoid;
 	result = voidsResult;
 }
 
@@ -44,10 +65,12 @@ void AnalysisCriteria1::checkNeighbours(Edge* edge,FacetDictionary *facetsDict, 
 	EdgeDictionary* edgesDict = facetsDict->getEdgeDictionary();
 	vector< int> facetsId = edge->getFacetsId();
 	// Get facets who share the same edge
+	Facet* facet;
 	for(vector<int>::iterator it = facetsId.begin(); it != facetsId.end(); ++it){
 		int facetId = *it;
-		Facet* facet = facetsDict->getById(facetId);
+		facet = facetsDict->getById(facetId);
 		// Algorithm's conditions for add facets in void result
+		//cout << "Facet : " << facet->getLongestEdge() << " - " << edge->getLength() << "\n";
 		if( (facetsInVoid[facetId] == 0) &&  // Facet not in a void
 			(facet->getLongestEdge() == edge->getLength()) // Actual edge is one of the longest edge of the facet
 			){ 
@@ -65,6 +88,7 @@ void AnalysisCriteria1::printResult(string filename, FacetDictionary* facetsDict
 	string outputFile = filename+string("_output.dat");
 	ofstream ofs(outputFile.c_str());
 	if(ofs.good()){
+		//cout << "GOOOD\n";
 		int void_k =0;
 		for(vector< vector< int > >::iterator it = this->result.begin() ; it != this->result.end() ; ++it){
 			float centroid[3];
@@ -84,15 +108,13 @@ void AnalysisCriteria1::printResult(string filename, FacetDictionary* facetsDict
 			centroid[0] = centroid[0]/float((*it).size());
 			centroid[1] = centroid[1]/float((*it).size());
 			centroid[2] = centroid[2]/float((*it).size());
-			
-			if(volume > 7238.0){
-				ofs << void_k << "\t" 
-					<< centroid[0] << "\t" 
-					<< centroid[1] << "\t" 
-					<< centroid[2] << "\t"
-					<< volume << "\n";
-				++void_k;
-			}
+			//cout << volume << "\n";
+			ofs << void_k << "\t" 
+				<< setprecision(12) << centroid[0] << "\t" 
+				<< centroid[1] << "\t" 
+				<< centroid[2] << "\t"
+				<< volume << "\n";
+			++void_k;
 		}
 	}
 	ofs.close();

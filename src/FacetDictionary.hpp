@@ -12,11 +12,13 @@ using namespace std;
 
 class FacetDictionary : public Dictionary<Facet>{
 	private:
-		Facet** facetsDict;
+		int** facetsNeighboursId;
+		int** facetsEdgesId;
+		int** facetsPointsId;
 		EdgeDictionary* edgesDict;
 		PointDictionary* pointsDict;
-		void loadNeighbours(ifstream*,int);
-		void loadVertexesAndEdges(ifstream*,int);
+		void loadNeighbours(string,int);
+		void loadVertexesAndEdges(string,int);
 	public:
 		FacetDictionary();
 		~FacetDictionary();

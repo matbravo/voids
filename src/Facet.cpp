@@ -1,7 +1,10 @@
 #include "Facet.hpp"
 #include <math.h>
 
-Facet::Facet(){}
+Facet::Facet(){
+	longestEdge = 0.0;
+	volume = 0.0;
+}
 
 Facet::Facet(int _id, int _points[4], int _neighbours[4]){
 	this->setId(_id);
@@ -114,7 +117,10 @@ int Facet::isInBorder(){
 	return 0;
 }
 
-
+void Facet::reset(){
+	longestEdge = 0.0;
+	volume = 0.0;
+}
 
 
 

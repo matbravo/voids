@@ -33,6 +33,7 @@ class Facet{
 		float getVolume();
 		float* getCentroid();
 		int isInBorder();
+		void reset();
 };
 
 #endif

@@ -40,7 +40,6 @@ int main(int argc, char **argv){
 	// File name into string
 	string input_file = string(argv[1]);		
 
-
 	// Create points dictionary from file
 	PointDictionary *pointsDict = new PointDictionary();
 	pointsDict->load(input_file);
@@ -52,9 +51,11 @@ int main(int argc, char **argv){
 
 	VoidAnalyzer *analyzer1 = new AnalysisCriteria1();
 	analyzer1->analyze(facetsDict);
-	vector < vector < int > > result = analyzer1->getResult();
-
 	analyzer1->printResult(input_file,facetsDict);
+
+	delete pointsDict;
+	delete facetsDict;
+	delete analyzer1;
 
 }
 

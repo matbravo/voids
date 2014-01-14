@@ -4,8 +4,15 @@
 #include <vector>
 using namespace std;
 
-PointDictionary::PointDictionary():Dictionary<float>(){}
-PointDictionary::~PointDictionary(){}
+PointDictionary::PointDictionary():Dictionary<float>(){
+	data_n = 0;
+}
+PointDictionary::~PointDictionary(){
+	for(int k = 0 ; k< data_n ; ++k){
+		delete [] dict[k];
+	}
+	delete [] dict;
+}
 
 float* PointDictionary::getById(int id){
 	return dict[id];
@@ -31,15 +38,18 @@ void PointDictionary::load(string points_file){
 		// Getting points in file
 		for(int k = 0; k < points_number ; k++){
 			getline(points_ifs,line);
-			//line.replace(line.length(),1,"\t");
-			vector<string> line_splited = this->split(line,'\t');
+			replace(line.begin(),line.end(),'\t',' ');
+			vector<string> line_splited = this->split(line,' ');
 			// Matrix column x y z in points[k]
 			dict[k] = new float[3];
 			int j = 0;
 			for(vector<string>::iterator it = line_splited.begin(); it != line_splited.end() ; it++){
-				dict[k][j] = stof((*it).c_str());
-				j++;
+				if((*it).compare(" ") != 0){
+					dict[k][j] = stof((*it).c_str());
+					j++;
+				}
 			}
+			//cout << dict[k][0] << " " << dict[k][1] << " " << dict[k][2] <<  "\n";
 		}
 		points_ifs.close();
 	}
