@@ -56,7 +56,7 @@ float Facet::getLongestEdge(){
 	if(this->longestEdge <= 0.0){
 		float max_length = 0.0;
 		for(int k= 0 ; k < 6 ; k++){
-			float length = edgesDict->getById(edgesId[k])->getLength();
+			float length = edgesDict->getById(edgesId[k]).getLength();
 			if(length > max_length) max_length = length;
 		}
 		longestEdge = max_length;

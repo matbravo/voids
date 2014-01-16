@@ -38,13 +38,13 @@ int EdgeDictionary::add(int x,int y, int facetId){ // Edge without ID
 	}
 }
 
-Edge* EdgeDictionary::getById(int _id){
-	Edge* edge = new Edge();
-	edge->setId(_id);
+Edge EdgeDictionary::getById(int _id){
+	Edge edge;
+	edge.setId(_id);
 	int pointsId[2] = {edgesDict2[_id].first,edgesDict2[_id].second};
-	edge->setPointsId(pointsId);
-	edge->setFacetsId(edgesFacetsId[_id]);
-	edge->setPointDictionary(this->pointsDict);
+	edge.setPointsId(pointsId);
+	edge.setFacetsId(edgesFacetsId[_id]);
+	edge.setPointDictionary(this->pointsDict);
 	return edge;
 }
 

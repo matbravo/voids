@@ -10,7 +10,7 @@
 using namespace std;
 class AnalysisCriteria1 : public VoidAnalyzer{
 	private:
-		void checkNeighbours(Edge* edge,FacetDictionary *facetsDict, vector<int> *voidResult, int *facetsInVoid);
+		void checkNeighbours(Edge edge,FacetDictionary *facetsDict, vector<int> *voidResult, int *facetsInVoid);
 	public:
 		AnalysisCriteria1();
 		~AnalysisCriteria1();

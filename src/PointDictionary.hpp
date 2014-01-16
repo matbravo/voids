@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class PointDictionary : public Dictionary<float>{
+class PointDictionary : public Dictionary<float*>{
 	private:
 		float** dict;
 	public:
@@ -14,7 +14,7 @@ class PointDictionary : public Dictionary<float>{
 		~PointDictionary();
 		void load(string);
 		float* getById(int);
-		int add(float*);
+		int add(float**);
 };
 
 #endif

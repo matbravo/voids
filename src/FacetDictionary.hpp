@@ -23,8 +23,9 @@ class FacetDictionary : public Dictionary<Facet>{
 		FacetDictionary();
 		~FacetDictionary();
 		void load(string);
-		Facet* getById(int);
+		Facet getById(int);
 		void setPointDictionary(PointDictionary*);
+		PointDictionary* getPointDictionary();
 		void setEdgeDictionary(EdgeDictionary*);
 		EdgeDictionary* getEdgeDictionary();
 		int add(Facet*);

@@ -4,6 +4,7 @@
 *.o
 *.DS_Store
 *.gch
+*.off
 build/*_output.dat
 build/test
 build/main

@@ -83,32 +83,32 @@ namespace DictionaryTest{
     remove("dictFacetsTestFile_vertex.dat");
     remove("dictFacetsTestFile_neighbours.dat");
 
-    Facet* firstFacet = dictFacets->getById(0);
-    Facet* secondFacet = dictFacets->getById(1);
+    Facet firstFacet = dictFacets->getById(0);
+    Facet secondFacet = dictFacets->getById(1);
     //Facet* thirdFacet = dictFacets-> getById(2);
     //Facet* fourthFacet = dictFacets->getById(3);
 
     // Test firstFacet
-    ASSERT_EQ(firstFacet->getNeighboursId()[0],1234);
-    ASSERT_EQ(firstFacet->getNeighboursId()[1],4331);
-    ASSERT_EQ(firstFacet->getNeighboursId()[2],4314);
-    ASSERT_EQ(firstFacet->getNeighboursId()[3],55);
+    ASSERT_EQ(firstFacet.getNeighboursId()[0],1234);
+    ASSERT_EQ(firstFacet.getNeighboursId()[1],4331);
+    ASSERT_EQ(firstFacet.getNeighboursId()[2],4314);
+    ASSERT_EQ(firstFacet.getNeighboursId()[3],55);
 
-    ASSERT_EQ(firstFacet->getPointsId()[0],91);
-    ASSERT_EQ(firstFacet->getPointsId()[1],89);
-    ASSERT_EQ(firstFacet->getPointsId()[2],72);
-    ASSERT_EQ(firstFacet->getPointsId()[3],2);
+    ASSERT_EQ(firstFacet.getPointsId()[0],91);
+    ASSERT_EQ(firstFacet.getPointsId()[1],89);
+    ASSERT_EQ(firstFacet.getPointsId()[2],72);
+    ASSERT_EQ(firstFacet.getPointsId()[3],2);
 
     // Test secondFacet
-    ASSERT_EQ(secondFacet->getNeighboursId()[0],83);
-    ASSERT_EQ(secondFacet->getNeighboursId()[1],7583);
-    ASSERT_EQ(secondFacet->getNeighboursId()[2],38);
-    ASSERT_EQ(secondFacet->getNeighboursId()[3],21);
+    ASSERT_EQ(secondFacet.getNeighboursId()[0],83);
+    ASSERT_EQ(secondFacet.getNeighboursId()[1],7583);
+    ASSERT_EQ(secondFacet.getNeighboursId()[2],38);
+    ASSERT_EQ(secondFacet.getNeighboursId()[3],21);
 
-    ASSERT_EQ(secondFacet->getPointsId()[0],33);
-    ASSERT_EQ(secondFacet->getPointsId()[1],123);
-    ASSERT_EQ(secondFacet->getPointsId()[2],43);
-    ASSERT_EQ(secondFacet->getPointsId()[3],1);
+    ASSERT_EQ(secondFacet.getPointsId()[0],33);
+    ASSERT_EQ(secondFacet.getPointsId()[1],123);
+    ASSERT_EQ(secondFacet.getPointsId()[2],43);
+    ASSERT_EQ(secondFacet.getPointsId()[3],1);
 
   }
 
@@ -153,8 +153,8 @@ namespace DictionaryTest{
 
     dictFacets->setPointDictionary(dictPoints);
 
-    Facet* aux= dictFacets->getById(0);
-    ASSERT_EQ(aux->getLongestEdge(),sqrt(pow(12,2)+pow(5,2)));
+    Facet aux= dictFacets->getById(0);
+    ASSERT_EQ(aux.getLongestEdge(),sqrt(pow(12,2)+pow(5,2)));
   }
 
 }

@@ -21,14 +21,14 @@ FacetDictionary::~FacetDictionary(){
 	delete [] facetsPointsId;
 }
 
-Facet* FacetDictionary::getById(int id){
-	Facet* facet = new Facet();
-	facet->setId(id);
-	facet->setPointsId(facetsPointsId[id]);
-	facet->setNeighboursId(facetsNeighboursId[id]);
-	facet->setEdgesId(facetsEdgesId[id]);
-	facet->setEdgeDictionary(this->edgesDict);
-	facet->setPointDictionary(this->pointsDict);
+Facet FacetDictionary::getById(int id){
+	Facet facet;
+	facet.setId(id);
+	facet.setPointsId(facetsPointsId[id]);
+	facet.setNeighboursId(facetsNeighboursId[id]);
+	facet.setEdgesId(facetsEdgesId[id]);
+	facet.setEdgeDictionary(this->edgesDict);
+	facet.setPointDictionary(this->pointsDict);
 	return facet;
 }
 
@@ -128,7 +128,9 @@ void FacetDictionary::setPointDictionary(PointDictionary* _pointsDict){
 	pointsDict= _pointsDict;
 	edgesDict->setPointDictionary(_pointsDict);
 }
-
+PointDictionary* FacetDictionary::getPointDictionary(){
+	return this->pointsDict;
+}
 EdgeDictionary* FacetDictionary::getEdgeDictionary(){
 	return edgesDict;
 }

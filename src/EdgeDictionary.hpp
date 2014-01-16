@@ -21,7 +21,7 @@ class EdgeDictionary : public Dictionary<Edge>{
 		int add(Edge*);
 		int add(int,int,int);
 		void load(string){};
-		Edge* getById(int);
+		Edge getById(int);
 		void setPointDictionary(PointDictionary*);
 };
 

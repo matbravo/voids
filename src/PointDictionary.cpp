@@ -4,7 +4,7 @@
 #include <vector>
 using namespace std;
 
-PointDictionary::PointDictionary():Dictionary<float>(){
+PointDictionary::PointDictionary():Dictionary<float*>(){
 	data_n = 0;
 }
 PointDictionary::~PointDictionary(){
@@ -18,7 +18,7 @@ float* PointDictionary::getById(int id){
 	return dict[id];
 }
 
-int PointDictionary::add(float*){
+int PointDictionary::add(float**){
 	return 0;
 }
 
