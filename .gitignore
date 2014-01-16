@@ -8,3 +8,5 @@
 build/*_output.dat
 build/test
 build/main
+build/SDSSVOIDS_FINAL.DAT
+build/compare_out_radio

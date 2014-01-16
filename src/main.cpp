@@ -52,6 +52,7 @@ int main(int argc, char **argv){
 	VoidAnalyzer *analyzer1 = new AnalysisCriteria1();
 	analyzer1->analyze(facetsDict);
 	analyzer1->printResult(input_file,facetsDict);
+	analyzer1->printResultOFF(input_file,facetsDict);
 
 	delete pointsDict;
 	delete facetsDict;
