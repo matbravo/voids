@@ -53,13 +53,11 @@ void AnalysisCriteria2::analyze(FacetDictionary *facetsDict){
 		delete volume;
 	}
 
-	cout << "Result size : " << voidsResult.size() << "\n";
 	// Look for intersections
 
 	vector< vector < int > > finalVoidsResult;
 	finalVoidsResult.push_back(voidsResult.back());
 	voidsResult.pop_back();
-
 
 	while(voidsResult.size() > 0){ // 1 or more voids in set
 		vector< int > singleVoidAux = voidsResult.back(); // Take one element from voidsResult
@@ -76,8 +74,6 @@ void AnalysisCriteria2::analyze(FacetDictionary *facetsDict){
 		finalVoidsResultAux.push_back(singleVoidAux);
 		finalVoidsResult = finalVoidsResultAux;
 	}
-
-	cout << "Final size : " << finalVoidsResult.size() << "\n";
  
 	result = finalVoidsResult;
 }
@@ -103,8 +99,9 @@ void AnalysisCriteria2::checkNeighbours(Edge edge,FacetDictionary *facetsDict, v
 	}
 }
 
-
-bool AnalysisCriteria2::auxIntersection(int a, int b){return (a > b);}
+bool AnalysisCriteria2::auxIntersection(int a, int b){
+	return (a > b);
+}
 
 pair< float , vector < int > > AnalysisCriteria2::intersection(vector<int> void1, vector<int> void2 , FacetDictionary* facetsDict){
 	float volume = 0.0;
@@ -130,10 +127,12 @@ pair< float , vector < int > > AnalysisCriteria2::intersection(vector<int> void1
 			volume+=facetsDict->getById(a).getVolume();
 		}
 	}
+
 	while(void1.size() > 0){
 		intersectionSet.push_back(void1.back());
 		void1.pop_back();
 	}
+	
 	while(void2.size() > 0){
 		intersectionSet.push_back(void2.back());
 		void2.pop_back();

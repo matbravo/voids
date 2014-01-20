@@ -20,7 +20,6 @@ class AnalysisCriteria1 : public VoidAnalyzer{
 		AnalysisCriteria1();
 		~AnalysisCriteria1();
 		void analyze(FacetDictionary*);
-		//void printResultOFF(string,FacetDictionary*);
 };
 
 
