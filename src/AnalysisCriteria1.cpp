@@ -3,20 +3,17 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <iomanip>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
+#include <iomanip>
+
 
 using namespace std;
 
 AnalysisCriteria1::AnalysisCriteria1():VoidAnalyzer(){}
 AnalysisCriteria1::~AnalysisCriteria1(){}
 
-vector < vector < int > > AnalysisCriteria1::getResult(){
-	return this->result;
-}
-bool isBiggerThan(Edge a, Edge b){ 
+bool AnalysisCriteria1::isBiggerThan(Edge a, Edge b){ 
 	return (a.getLength() > b.getLength());
 }
 
@@ -29,7 +26,7 @@ void AnalysisCriteria1::analyze(FacetDictionary *facetsDict){
 	for(int k=0 ; k < edgesDict->getDataLength() ; k++){
 		edgeList[k] = edgesDict->getById(k);
 	}
-	sort(edgeList.begin(),edgeList.end(),isBiggerThan); // Complexity N log N
+	sort(edgeList.begin(),edgeList.end(),&AnalysisCriteria1::isBiggerThan); // Complexity N log N
 
 
 	int *facetsInVoid= new int[facetsDict->getDataLength()]; // Array contains facets marked visited by analyze
@@ -52,13 +49,15 @@ void AnalysisCriteria1::analyze(FacetDictionary *facetsDict){
 					isInBorder = 1;
 					break;
 				}
-				//volume+=facetsDict->getById(*singleVoid_it).getVolume();
 			}
-			if( isInBorder == 0 && (*volume) > MIN_VOLUME){ // Add only if not in border
+			if( isInBorder == 0 && (*volume) > MIN_VOLUME_CRITERIA_1){ // Add only if not in border
 				voidsResult.push_back(*singleVoid);
-				
 			}else{
-				delete singleVoid;
+				if(isInBorder == 1){
+					voidsDeleted.push_back(*singleVoid);
+				}else{
+					delete singleVoid;
+				}
 			}
 		}else{
 			delete singleVoid;
@@ -79,7 +78,7 @@ void AnalysisCriteria1::checkNeighbours(Edge edge,FacetDictionary *facetsDict, v
 		// Algorithm's conditions for add facets in void result
 		if( (facetsInVoid[facetId] == 0) &&  // Facet not in a void
 			(facet.getLongestEdge() == edge.getLength()) && // Actual edge is one of the longest edge of the facet
-			(facet.getVolume()/(*volume)*100.0 >= MIN_PERCENT_VOLUME)
+			(facet.getVolume()/(*volume)*100.0 >= MIN_PERCENT_VOLUME_CRITERIA_1)
 			){ 
 			facetsInVoid[facetId] = 1; // Set facet in void
 			voidResult->push_back(facetId); // Add facet in result
@@ -92,43 +91,7 @@ void AnalysisCriteria1::checkNeighbours(Edge edge,FacetDictionary *facetsDict, v
 	}
 }
 
-void AnalysisCriteria1::printResult(string filename, FacetDictionary* facetsDict){
-	string outputFile = filename+string("_output.dat");
-	ofstream ofs(outputFile.c_str());
-	
-	if(ofs.good()){
-		//cout << "GOOOD\n";
-		int void_k =0;
-		for(vector< vector< int > >::iterator it = this->result.begin() ; it != this->result.end() ; ++it){
-			float centroid[3];
-			centroid[0] = 0.0;
-			centroid[1] = 0.0;
-			centroid[2] = 0.0;
-			float volume = 0.0;
-			for(vector<int>::iterator void_it = (*it).begin(); void_it != (*it).end() ; ++void_it){
-				Facet facet = facetsDict->getById(*void_it);
-				volume = volume + facet.getVolume();
-				float* aux_centroid = facet.getCentroid();
-				centroid[0] = centroid[0] + aux_centroid[0];
-				centroid[1] = centroid[1] + aux_centroid[1];
-				centroid[2] = centroid[2] + aux_centroid[2];
-			}
-			centroid[0] = centroid[0]/float((*it).size());
-			centroid[1] = centroid[1]/float((*it).size());
-			centroid[2] = centroid[2]/float((*it).size());
-			float radio = float(pow((float(3.0/float(4.0*PI))*volume),float(1.0/3.0)));
-			ofs << void_k << "\t" 
-				<< setprecision(12) << centroid[0] << "\t" 
-				<< centroid[1] << "\t" 
-				<< centroid[2] << "\t"
-				<< radio << "\t"
-				<< volume << "\n";
-			++void_k;
-		}
-	}
-	ofs.close();
-}
-void AnalysisCriteria1::printResultOFF(string filename, FacetDictionary* facetsDict){
+/*void AnalysisCriteria1::printResultOFF(string filename,FacetDictionary* facetsDict){
 	string outputFile_geom = filename+string("_output.off");
 	ofstream ofs_geom(outputFile_geom.c_str());
 
@@ -142,6 +105,9 @@ void AnalysisCriteria1::printResultOFF(string filename, FacetDictionary* facetsD
 		int faces_n = 0;
 
 		for(vector< vector< int > >::iterator it = this->result.begin() ; it != this->result.end() ; ++it){
+			faces_n+=(*it).size();
+		}
+		for(vector< vector< int > >::iterator it = this->voidsDeleted.begin() ; it != this->voidsDeleted.end() ; ++it){
 			faces_n+=(*it).size();
 		}
 		faces_n=faces_n*4;
@@ -160,10 +126,24 @@ void AnalysisCriteria1::printResultOFF(string filename, FacetDictionary* facetsD
 			rgb[2] = rand() % 256;
 			for(vector<int>::iterator void_it = (*it).begin(); void_it != (*it).end() ; ++void_it){
 				Facet facet = facetsDict->getById(*void_it);
-				cout << "Neighbour : " << facet.getNeighboursId()[0] << " "
-						<< facet.getNeighboursId()[1] << " "
-						<< facet.getNeighboursId()[2] << " "
-						<< facet.getNeighboursId()[3] << "\n"; 
+				int *points_aux = facet.getPointsId();
+				ofs_geom << "3 " << points_aux[0] << " " << points_aux[1] << " " << points_aux[2] 
+							<< " " << rgb[0] << " " << rgb[1] << " " << rgb[2] << "\n";
+				ofs_geom << "3 " << points_aux[0] << " " << points_aux[1] << " " << points_aux[3] 
+							<< " " << rgb[0] << " " << rgb[1] << " " << rgb[2] << "\n";
+				ofs_geom << "3 " << points_aux[0] << " " << points_aux[2] << " " << points_aux[3] 
+							<< " " << rgb[0] << " " << rgb[1] << " " << rgb[2] << "\n";
+				ofs_geom << "3 " << points_aux[1] << " " << points_aux[2] << " " << points_aux[3] 
+							<< " " << rgb[0] << " " << rgb[1] << " " << rgb[2] << "\n";
+			}
+		}
+		for(vector< vector< int > >::iterator it = this->voidsDeleted.begin() ; it != this->voidsDeleted.end() ; ++it){
+			int rgb[3];
+			rgb[0] = 255;
+			rgb[1] = 255;
+			rgb[2] = 255;
+			for(vector<int>::iterator void_it = (*it).begin(); void_it != (*it).end() ; ++void_it){
+				Facet facet = facetsDict->getById(*void_it);
 				int *points_aux = facet.getPointsId();
 				ofs_geom << "3 " << points_aux[0] << " " << points_aux[1] << " " << points_aux[2] 
 							<< " " << rgb[0] << " " << rgb[1] << " " << rgb[2] << "\n";
@@ -177,10 +157,7 @@ void AnalysisCriteria1::printResultOFF(string filename, FacetDictionary* facetsD
 		}
 	}
 	ofs_geom.close();
-
-}
-
-
+}*/
 
 
 

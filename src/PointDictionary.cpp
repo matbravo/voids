@@ -18,8 +18,18 @@ float* PointDictionary::getById(int id){
 	return dict[id];
 }
 
-int PointDictionary::add(float**){
-	return 0;
+int PointDictionary::add(float** _point){
+	return add(*_point);
+}
+int PointDictionary::add(float* _point){
+	float* point = new float[3];
+	point[0] = _point[0];
+	point[1] = _point[1];
+	point[2] = _point[2];
+	dict[data_n] = point;
+	int id = data_n;
+	++data_n;
+	return id;
 }
 
 void PointDictionary::load(string points_file){

@@ -5,6 +5,7 @@
 #include "FacetDictionary.hpp"
 #include "PointDictionary.hpp"
 #include "AnalysisCriteria1.hpp"
+#include "AnalysisCriteria2.hpp"
 #include <vector>
 using namespace std;
 
@@ -50,9 +51,15 @@ int main(int argc, char **argv){
 	facetsDict->setPointDictionary(pointsDict);
 
 	VoidAnalyzer *analyzer1 = new AnalysisCriteria1();
-	analyzer1->analyze(facetsDict);
-	analyzer1->printResult(input_file,facetsDict);
-	analyzer1->printResultOFF(input_file,facetsDict);
+	VoidAnalyzer *analyzer2 = new AnalysisCriteria2();
+
+	//analyzer1->analyze(facetsDict);
+	//analyzer1->printResult(input_file,facetsDict);
+	//analyzer1->printResultOFF(input_file,facetsDict);
+
+	analyzer2->analyze(facetsDict);
+	analyzer2->printResult(input_file,facetsDict);
+	analyzer2->printResultOFF(input_file,facetsDict);
 
 	delete pointsDict;
 	delete facetsDict;

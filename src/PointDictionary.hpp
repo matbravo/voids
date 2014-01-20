@@ -15,6 +15,7 @@ class PointDictionary : public Dictionary<float*>{
 		void load(string);
 		float* getById(int);
 		int add(float**);
+		int add(float*);
 };
 
 #endif

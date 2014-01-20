@@ -4,6 +4,7 @@
 #include <vector>
 #include "PointDictionary.hpp"
 #include "FacetDictionary.hpp"
+#define PI 3.1415926
 using namespace std;
 
 class VoidAnalyzer{
@@ -13,9 +14,9 @@ class VoidAnalyzer{
 		VoidAnalyzer(){};
 		virtual ~VoidAnalyzer(){};
 		virtual void analyze(FacetDictionary*) = 0;
-		virtual vector< vector< int > > getResult() = 0;
-		virtual void printResult(string,FacetDictionary*) = 0;
-		virtual void printResultOFF(string,FacetDictionary*) = 0;
+		vector< vector< int > > getResult();
+		void printResult(string,FacetDictionary*);
+		virtual void printResultOFF(string,FacetDictionary*);
 };
 
 
