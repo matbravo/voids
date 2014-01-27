@@ -6,18 +6,18 @@
 #include "FacetDictionary.hpp"
 #include "PointDictionary.hpp"
 #include "Edge.hpp"
-#define MIN_VOLUME_CRITERIA_1 7238.0
-#define MIN_PERCENT_VOLUME_CRITERIA_1 10
 using namespace std;
 
 class AnalysisCriteria1 : public VoidAnalyzer{
 	protected:
 		static bool isBiggerThan(Edge,Edge);
 	private:
-		vector< vector <int> > voidsDeleted;
-		void checkNeighbours(Edge edge,FacetDictionary *facetsDict, vector<int> *voidResult, int *facetsInVoid, float *volume);
+		void checkNeighbours(Edge edge,FacetDictionary *facetsDict, vector<int> *voidResult, int *facetsInVoid, float *volume, int*);
+		float minVolume;
+		float minPercentVolume;
 	public:
 		AnalysisCriteria1();
+		AnalysisCriteria1(float,float);
 		~AnalysisCriteria1();
 		void analyze(FacetDictionary*);
 };

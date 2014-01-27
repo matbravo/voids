@@ -15,6 +15,7 @@ class FacetDictionary : public Dictionary<Facet>{
 		int** facetsNeighboursId;
 		int** facetsEdgesId;
 		int** facetsPointsId;
+		int* facetsVoidId;
 		EdgeDictionary* edgesDict;
 		PointDictionary* pointsDict;
 		void loadNeighbours(string,int);
@@ -29,6 +30,7 @@ class FacetDictionary : public Dictionary<Facet>{
 		void setEdgeDictionary(EdgeDictionary*);
 		EdgeDictionary* getEdgeDictionary();
 		int add(Facet*);
+		void setFacetVoidId(int,int); // Facet id , VoidId value
 };
 
 #endif

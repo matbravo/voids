@@ -4,8 +4,8 @@
 Facet::Facet(){
 	longestEdge = 0.0;
 	volume = 0.0;
+	voidId = -1;
 }
-
 Facet::Facet(int _id, int _points[4], int _neighbours[4]){
 	this->setId(_id);
 	this->setPointsId(_points);
@@ -84,9 +84,9 @@ float Facet::getVolume(){
 		b_dXc_d[0] = b_d[1]*c_d[2] - c_d[1]*b_d[2];
 		b_dXc_d[1] = c_d[0]*b_d[2] - b_d[0]*c_d[2];
 		b_dXc_d[2] = b_d[0]*c_d[1] - c_d[0]*b_d[1];
-		float result = (a_d[0]*b_dXc_d[0] + a_d[1]*b_dXc_d[1] + a_d[2]*b_dXc_d[2]);
-		result = result/6.0;
-		if(result <= 0.0 ) result= result*-1.0;
+		float result = float(a_d[0]*b_dXc_d[0]) + float(a_d[1]*b_dXc_d[1]) + float(a_d[2]*b_dXc_d[2]);
+		result = float(result/6.0);
+		if(result <= 0.0 ) result= float(result*-1.0);
 		volume = result;
 	}
 	return this->volume;
@@ -106,8 +106,6 @@ float* Facet::getCentroid(){
 	centroid[1] = result[1]/4.0;
 	centroid[2] = result[2]/4.0;
 
-	//cout << "GetCentroid function : " << centroid[0] << " " << centroid[1] << " " << centroid[2] << "\n";
-
 	return this->centroid;
 }
 int Facet::isInBorder(){
@@ -116,12 +114,16 @@ int Facet::isInBorder(){
 	}
 	return 0;
 }
-
 void Facet::reset(){
 	longestEdge = 0.0;
 	volume = 0.0;
 }
-
+int Facet::getVoidId(){
+	return this->voidId;
+}
+void Facet::setVoidId(int _voidId){
+	voidId = _voidId;
+}
 
 
 

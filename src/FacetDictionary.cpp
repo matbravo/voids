@@ -20,7 +20,6 @@ FacetDictionary::~FacetDictionary(){
 	delete [] facetsEdgesId;
 	delete [] facetsPointsId;
 }
-
 Facet FacetDictionary::getById(int id){
 	Facet facet;
 	facet.setId(id);
@@ -29,9 +28,9 @@ Facet FacetDictionary::getById(int id){
 	facet.setEdgesId(facetsEdgesId[id]);
 	facet.setEdgeDictionary(this->edgesDict);
 	facet.setPointDictionary(this->pointsDict);
+	facet.setVoidId(facetsVoidId[id]);
 	return facet;
 }
-
 void FacetDictionary::load(string input_file){
 	// Input files strings.
 	string input_vertexes = input_file+string("_vertex.dat");
@@ -49,6 +48,10 @@ void FacetDictionary::load(string input_file){
 		facetsNeighboursId = new int*[facet_number];
 		facetsEdgesId = new int*[facet_number];
 		facetsPointsId = new int*[facet_number];
+		facetsVoidId = new int[facet_number];
+		for(int k = 0 ; k < facet_number ; k++){
+			facetsVoidId[k] = -1;
+		}
 		data_n = facet_number;
 		// Read from files into two threads.
 		//thread first(&FacetDictionary::loadVertexesAndEdges,this,input_vertexes,facet_number);
@@ -59,7 +62,6 @@ void FacetDictionary::load(string input_file){
 		loadVertexesAndEdges(input_vertexes,facet_number);
 	}
 }
-
 void FacetDictionary::loadNeighbours(string input_neighbours,int number){
 	string line;
 	ifstream neighbours_ifs;
@@ -85,7 +87,6 @@ void FacetDictionary::loadNeighbours(string input_neighbours,int number){
 	}
 	return;
 }
-
 // Load vertexes and edges to the dictionary
 void FacetDictionary::loadVertexesAndEdges(string input_vertexes,int number){
 	string line;
@@ -123,7 +124,6 @@ void FacetDictionary::loadVertexesAndEdges(string input_vertexes,int number){
 	}
 	return;
 }
-
 void FacetDictionary::setPointDictionary(PointDictionary* _pointsDict){
 	pointsDict= _pointsDict;
 	edgesDict->setPointDictionary(_pointsDict);
@@ -134,9 +134,11 @@ PointDictionary* FacetDictionary::getPointDictionary(){
 EdgeDictionary* FacetDictionary::getEdgeDictionary(){
 	return edgesDict;
 }
-
 int FacetDictionary::add(Facet* _facet){
 	return 0;
+}
+void FacetDictionary::setFacetVoidId(int facetId, int voidId){
+	facetsVoidId[facetId] = voidId;
 }
 
 

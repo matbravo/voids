@@ -11,11 +11,8 @@ namespace EdgeTest{
 
     virtual void SetUp() {
       edge = new Edge();
-      pointsDict = new PointDictionary();
-      float point1[3] = {293.14,1923.2,-382.01};
-      float point2[3] = {-491.23,-390,62.01};
-      //id1 = pointsDict->add(point1);
-      //id2 = pointsDict->add(point2);
+      //pointsDict = new PointDictionary();
+      
     }
     virtual void TearDown() {
     // Code here will be called immediately after each test (right
@@ -23,8 +20,6 @@ namespace EdgeTest{
     }
     // Objects declared here can be used by all tests in the test case for Foo.
     Edge *edge;
-    PointDictionary* pointsDict;
-    int id1,id2;
   };
 
   // Tests that the Foo::Bar() method does Abc.
@@ -46,9 +41,5 @@ namespace EdgeTest{
     for( int it=0; it < 8 ; it++){
       ASSERT_EQ(aux[it],result[it]);
     }
-  }
-  TEST_F(EdgeTest, length){
-    int aux[2] = {id1,id2};
-    edge->setPointsId(aux);
   }
 }

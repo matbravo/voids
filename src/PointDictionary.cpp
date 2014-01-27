@@ -13,11 +13,9 @@ PointDictionary::~PointDictionary(){
 	}
 	delete [] dict;
 }
-
 float* PointDictionary::getById(int id){
 	return dict[id];
 }
-
 int PointDictionary::add(float** _point){
 	return add(*_point);
 }
@@ -31,7 +29,6 @@ int PointDictionary::add(float* _point){
 	++data_n;
 	return id;
 }
-
 void PointDictionary::load(string points_file){
 	string input_points = points_file+string(".dat");
 	ifstream points_ifs(input_points.c_str());
@@ -59,7 +56,6 @@ void PointDictionary::load(string points_file){
 					j++;
 				}
 			}
-			//cout << dict[k][0] << " " << dict[k][1] << " " << dict[k][2] <<  "\n";
 		}
 		points_ifs.close();
 	}

@@ -76,8 +76,8 @@ found_file.close()
 
 ## 2 buscar puntos coincidentes dentro del radio del 2
 
-#result=findMatches(points_base,points_found)
-result=findMatches(points_found,points_base)
+result=findMatches(points_base,points_found)
+#result=findMatches(points_found,points_base)
 
 ## 3 copiar en archivo de salida
 

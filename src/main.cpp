@@ -6,6 +6,7 @@
 #include "PointDictionary.hpp"
 #include "AnalysisCriteria1.hpp"
 #include "AnalysisCriteria2.hpp"
+#include "AnalysisCriteria3.hpp"
 #include <vector>
 using namespace std;
 
@@ -13,6 +14,9 @@ using namespace std;
 /*	argv[1] = input_file_name
 	Example:
 		If you used the file called SDSS.dat SDSS_neighbours.dat SDSS_vertex.dat, input_file_name would be SDSS
+
+	Example:
+		./main SDSS_preprocess -v100000 -p1 -c3
 */			
 int main(int argc, char **argv){
 
@@ -33,13 +37,33 @@ int main(int argc, char **argv){
 				- this file contains the data of vertexes of an specific facet. File's line specifies the facet's id. 
 	*/
 
-	if(argc < 2){
-		cout << "No input file specified" << '\n';
-		return 0;
-	}
-
 	// File name into string
-	string input_file = string(argv[1]);		
+	string input_file = string(argv[1]);
+	// Flag values
+	float minVolume = 0.0;
+	float minPercentVolume = 0.0;
+	int criteria = 1;
+	float minEdgeLength = 0.0;
+
+	for(int k = 1 ; k < argc ; ++k ){
+		if(argv[k][0] == '-'){
+			switch(argv[k][1]){
+				case 'v': 
+					minVolume = atof(argv[k]+2);
+					break;
+				case 'p':
+					minPercentVolume = atof(argv[k]+2);
+					break;
+				case 'c':
+					criteria = atoi(argv[k]+2);
+					break;
+				case 'e':
+					minEdgeLength = atof(argv[k]+2);
+			}
+		}else{
+			input_file = string(argv[k]);
+		}
+	}
 
 	// Create points dictionary from file
 	PointDictionary *pointsDict = new PointDictionary();
@@ -50,20 +74,27 @@ int main(int argc, char **argv){
 	facetsDict->load(input_file);
 	facetsDict->setPointDictionary(pointsDict);
 
-	VoidAnalyzer *analyzer1 = new AnalysisCriteria1();
-	VoidAnalyzer *analyzer2 = new AnalysisCriteria2();
+	VoidAnalyzer *analyzer;
 
-	//analyzer1->analyze(facetsDict);
-	//analyzer1->printResult(input_file,facetsDict);
-	//analyzer1->printResultOFF(input_file,facetsDict);
+	switch(criteria){
+		case 1:
+			analyzer = new AnalysisCriteria1(minVolume,minPercentVolume);
+			break;
+		case 2:
+			analyzer = new AnalysisCriteria2(minVolume,minPercentVolume,minEdgeLength);
+			break;
+		case 3:
+			analyzer = new AnalysisCriteria3(minVolume,minPercentVolume,minEdgeLength);
+			break;
+	}
 
-	analyzer2->analyze(facetsDict);
-	analyzer2->printResult(input_file,facetsDict);
-	analyzer2->printResultOFF(input_file,facetsDict);
+	analyzer->analyze(facetsDict);
+	analyzer->printResult(input_file,facetsDict);
+	analyzer->printResultOFF(input_file,facetsDict);
 
 	delete pointsDict;
 	delete facetsDict;
-	delete analyzer1;
+	delete analyzer;
 
 }
 

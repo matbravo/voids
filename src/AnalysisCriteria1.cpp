@@ -10,9 +10,15 @@
 
 using namespace std;
 
-AnalysisCriteria1::AnalysisCriteria1():VoidAnalyzer(){}
 AnalysisCriteria1::~AnalysisCriteria1(){}
-
+AnalysisCriteria1::AnalysisCriteria1():VoidAnalyzer(){
+	minVolume = 0.0;
+	minPercentVolume = 0.0;
+}
+AnalysisCriteria1::AnalysisCriteria1(float _minVolume, float _minPercentVolume){
+	minVolume = _minVolume;
+	minPercentVolume = _minPercentVolume;
+}
 bool AnalysisCriteria1::isBiggerThan(Edge a, Edge b){ 
 	return (a.getLength() > b.getLength());
 }
@@ -33,59 +39,60 @@ void AnalysisCriteria1::analyze(FacetDictionary *facetsDict){
 	for(int i=0;i < facetsDict->getDataLength();++i){
 			facetsInVoid[i] = 0;
 		}
-
+	float *volume = new float();
+	int *isInBorder = new int();
 	for(vector<Edge>::iterator it = edgeList.begin(); it != edgeList.end() ; ++it){
 		Edge edge = *it; // Actual edge
 		vector<int> *singleVoid = new vector<int>(); // Facets' id of a single void
-		float *volume = new float();
 		*volume = 0.0;
-		checkNeighbours(edge,facetsDict,singleVoid,facetsInVoid,volume); // Recursive algorithm to find voids
+		*isInBorder = 0;
+		checkNeighbours(edge,facetsDict,singleVoid,facetsInVoid,volume,isInBorder); // Recursive algorithm to find voids
 		if(singleVoid->size() > 0 ){
 			// Delete if singleVoid is in border
-			int isInBorder = 0;
-			for(vector<int>::iterator singleVoid_it = singleVoid->begin(); singleVoid_it != singleVoid->end(); ++singleVoid_it){
-				Facet facet = facetsDict->getById(*singleVoid_it);
-				if(facet.isInBorder() == 1){
-					isInBorder = 1;
-					break;
-				}
-			}
-			if( isInBorder == 0 && (*volume) > MIN_VOLUME_CRITERIA_1){ // Add only if not in border
+			if( *isInBorder == 0 && (*volume) > minVolume){ // Add only if not in border
 				voidsResult.push_back(*singleVoid);
 			}else{
-				if(isInBorder == 1){
-					voidsDeleted.push_back(*singleVoid);
-				}else{
-					delete singleVoid;
+				for(vector<int>::iterator singleVoid_it = singleVoid->begin(); singleVoid_it != singleVoid->end(); ++singleVoid_it){
+					facetsInVoid[*singleVoid_it] = 0;
 				}
+				delete singleVoid;
 			}
 		}else{
 			delete singleVoid;
 		}
-		delete volume;
 	}
+	delete volume;
+	delete isInBorder;
 	delete [] facetsInVoid;
 	result = voidsResult;
 }
 
-void AnalysisCriteria1::checkNeighbours(Edge edge,FacetDictionary *facetsDict, vector<int> *voidResult, int *facetsInVoid, float* volume){
+void AnalysisCriteria1::checkNeighbours(Edge edge,FacetDictionary *facetsDict, vector<int> *voidResult, int *facetsInVoid, float* volume, int* isInBorder){
 	EdgeDictionary* edgesDict = facetsDict->getEdgeDictionary();
 	vector< int> facetsId = edge.getFacetsId();
 	// Get facets who share the same edge
 	for(vector<int>::iterator it = facetsId.begin(); it != facetsId.end(); ++it){
 		int facetId = *it;
 		Facet facet = facetsDict->getById(facetId);
+		if(*volume == 0.0){
+			*volume = *volume + facet.getVolume();
+		}
 		// Algorithm's conditions for add facets in void result
 		if( (facetsInVoid[facetId] == 0) &&  // Facet not in a void
 			(facet.getLongestEdge() == edge.getLength()) && // Actual edge is one of the longest edge of the facet
-			(facet.getVolume()/(*volume)*100.0 >= MIN_PERCENT_VOLUME_CRITERIA_1)
+			(facet.getVolume()/(*volume)*100.0 >= minPercentVolume)
 			){ 
 			facetsInVoid[facetId] = 1; // Set facet in void
 			voidResult->push_back(facetId); // Add facet in result
 			(*volume) = (*volume) + facet.getVolume();
+			if(facet.isInBorder() == 1){
+				*isInBorder = 1;
+			}
 			int* edgesId = facet.getEdgesId();
 			for(int k = 0; k < 6 ; ++ k){
-				checkNeighbours(edgesDict->getById(edgesId[k]),facetsDict,voidResult,facetsInVoid,volume);
+				if(edgesId[k] != edge.getId()){
+					checkNeighbours(edgesDict->getById(edgesId[k]),facetsDict,voidResult,facetsInVoid,volume,isInBorder);
+				}
 			} 
 		}
 	}

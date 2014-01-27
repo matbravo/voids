@@ -11,7 +11,6 @@ vector< vector< int > > VoidAnalyzer::getResult(){
 void VoidAnalyzer::printResult(string filename, FacetDictionary* facetsDict){
 	string outputFile = filename+string("_output.dat");
 	ofstream ofs(outputFile.c_str());
-	
 	if(ofs.good()){
 		int void_k =0;
 		for(vector< vector< int > >::iterator it = this->result.begin() ; it != this->result.end() ; ++it){
@@ -43,32 +42,24 @@ void VoidAnalyzer::printResult(string filename, FacetDictionary* facetsDict){
 	}
 	ofs.close();
 }
-
 void VoidAnalyzer::printResultOFF(string filename, FacetDictionary* facetsDict){
 	string outputFile_geom = filename+string("_output.off");
 	ofstream ofs_geom(outputFile_geom.c_str());
-
 	srand(time(NULL));
-
 	PointDictionary* p = facetsDict->getPointDictionary();
-
 	if(ofs_geom.good()){
 		ofs_geom << "\tOFF\n";
 		int points_n = p->getDataLength();
 		int faces_n = 0;
-
 		for(vector< vector< int > >::iterator it = this->result.begin() ; it != this->result.end() ; ++it){
 			faces_n+=(*it).size();
 		}
 		faces_n=faces_n*4;
-
 		ofs_geom << " " << points_n << " " << faces_n << " 0\n";
-
 		for(int k = 0 ; k < p->getDataLength() ; k++){
 			float* point = p->getById(k);
 			ofs_geom << setprecision(12) << point[0] << "\t" << point[1] << "\t" << point[2] << "\n";
 		}
-
 		for(vector< vector< int > >::iterator it = this->result.begin() ; it != this->result.end() ; ++it){
 			int rgb[3];
 			rgb[0] = rand() % 256;
@@ -89,5 +80,4 @@ void VoidAnalyzer::printResultOFF(string filename, FacetDictionary* facetsDict){
 		}
 	}
 	ofs_geom.close();
-
 }
