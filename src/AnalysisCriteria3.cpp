@@ -30,8 +30,6 @@ void AnalysisCriteria3::analyze(FacetDictionary *facetsDict){
 	cout << "Analyzing ...\n";
 	EdgeDictionary* edgesDict = facetsDict->getEdgeDictionary();
 
-	//vector<Edge> edgeList(edgesDict->getDataLength()); // Edge list used by sort
-
 	vector<Edge> edgeList;
 
 	for(int k=0 ; k < edgesDict->getDataLength() ; k++){
@@ -40,7 +38,6 @@ void AnalysisCriteria3::analyze(FacetDictionary *facetsDict){
 			edgeList.push_back(edgeAux);
 		}
 	}
-
 
 	sort(edgeList.begin(),edgeList.end(),&AnalysisCriteria3::isBiggerThan); // Complexity N log N
 
@@ -55,10 +52,13 @@ void AnalysisCriteria3::analyze(FacetDictionary *facetsDict){
 		vector<int> *singleVoid = new vector<int>(); // Facets' id of a single void
 		*volume = 0.0;
 		checkNeighbours(edge,facetsDict,singleVoid,volume,voidK); // Recursive algorithm to find voids
-		if(singleVoid->size() > 0 ){
+		if(singleVoid->size() > 0 && *volume > minVolume){
 			voidContainer->addVoid(*singleVoid);
 			voidK = voidContainer->getNextId();
 		}else{
+			for(vector<int>::iterator it = (*singleVoid).begin() ; it != (*singleVoid).end() ; ++it){
+				facetsDict->setFacetVoidId(*it,-1);
+			}
 			delete singleVoid;
 		}
 	}
@@ -69,9 +69,7 @@ void AnalysisCriteria3::analyze(FacetDictionary *facetsDict){
 	voidsIdResult.push_back(0);
 
 	int range = voidContainer->getDataLength();
-	cout << "Range : " << range << "\n";
 	for(int k = 1 ; k < range ; k++){
-		cout << k << " de " << range << "\n";
 		vector<int> voidsIdResult_aux;
 		int voidSpace1 = k;
 		for(vector<int>::iterator voidsIdResult_it = voidsIdResult.begin() ; voidsIdResult_it != voidsIdResult.end() ; ++voidsIdResult_it){
@@ -87,7 +85,6 @@ void AnalysisCriteria3::analyze(FacetDictionary *facetsDict){
 		voidsIdResult.push_back(voidSpace1);
 	}
 
-
 	vector< vector<int> > preResult;
 	for(vector<int>::iterator it = voidsIdResult.begin(); it != voidsIdResult.end() ; ++it){
 		VoidSpace voidToAdd = voidContainer->getById(*it);
@@ -99,15 +96,21 @@ void AnalysisCriteria3::analyze(FacetDictionary *facetsDict){
 	}
 
 	result = preResult;
+
+	delete voidContainer;
 }
 
 void AnalysisCriteria3::checkNeighbours(Edge edge,FacetDictionary *facetsDict, vector<int> *voidResult,float *volume,int voidK){
 	EdgeDictionary* edgesDict = facetsDict->getEdgeDictionary();
 	vector< int> facetsId = edge.getFacetsId();
+
 	// Get facets who share the same edge
 	for(vector<int>::iterator it = facetsId.begin(); it != facetsId.end(); ++it){
 		int facetId = *it;
 		Facet facet = facetsDict->getById(facetId);
+		if(*volume == 0.0){
+			*volume = facet.getVolume();
+		}
 		// Algorithm's conditions for add facets in void result
 		if( (facet.getVoidId() < 0) &&  // Facet not in a void
 			(facet.getLongestEdge() == edge.getLength()) && // Actual edge is one of the longest edge of the facet
@@ -131,6 +134,14 @@ int AnalysisCriteria3::joinVoids(int _void1,int _void2,VoidContainer* voidContai
 	float area = 0.0;
 	VoidSpace void1 = voidContainer->getById(_void1);
 	VoidSpace void2 = voidContainer->getById(_void2);
+	VoidSpace void_aux;
+
+	if(void1.getFacetsId().size() > void2.getFacetsId().size()){
+		void_aux = void1;
+		void1 = void2;
+		void2 = void_aux;
+	}
+
 
 	FacetDictionary *facetsDict = voidContainer->getFacetDictionary();
 
@@ -138,10 +149,8 @@ int AnalysisCriteria3::joinVoids(int _void1,int _void2,VoidContainer* voidContai
 	vector<int> void2ids = void2.getFacetsId();
 
 	for(vector<int>::iterator void1_it = void1ids.begin() ; void1_it != void1ids.end() ; ++void1_it){
-
 		Facet facet1 = facetsDict->getById(*void1_it);
 		int *aux = facet1.getNeighboursId();
-
 		for(int k = 0 ; k < 4 ; ++k){
 			if(aux[k] >= 0){ // If not in border
 				Facet facet2 = facetsDict->getById(aux[k]);
